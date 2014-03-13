@@ -1,0 +1,6 @@
+node_modules
+npm-debug.log
+tmp
+node-webkit
+build
+libudev.so.0
