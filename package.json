@@ -31,10 +31,10 @@
     "lodash": "~2.4.1"
   },
   "devDependencies": {
-    "grunt": "~0.4.4"
+    "grunt": "~0.4.0"
   },
   "peerDependencies": {
-    "grunt": "~0.4.4"
+    "grunt": "~0.4.0"
   },
   "keywords": [
     "gruntplugin"
