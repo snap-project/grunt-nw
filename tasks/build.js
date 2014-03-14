@@ -91,11 +91,12 @@ module.exports = function(grunt) {
             }
 
           ],
+
           linux: [
 
             // Workaround libudev.so.0
             function addWrapper(buildDir, next) {
-              copyTree('tasks/build-res/linux/**', buildDir);
+              copyTree(path.join(__dirname, 'build-res/linux/**'), buildDir);
               var currentWrapper = path.join(buildDir, 'app-wrapper.sh');
               var dest = path.join(buildDir, pkg.name);
               fs.renameSync(currentWrapper, dest);

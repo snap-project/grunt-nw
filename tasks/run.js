@@ -7,11 +7,11 @@ var spawn = require('child_process').spawn;
 
 module.exports = function(grunt) {
 
-  grunt.registerTask('unsafeRun', 'Run node-webkit application without running download task', unsafeRunTask);
+  grunt.registerTask('run', 'Run node-webkit application', runTask);
 
-  grunt.registerTask('run', 'Run node-webkit application', ['download', 'unsafeRun']);
+  function runTask() {
 
-  function unsafeRunTask() {
+    this.requires('download');
 
     var nw = require('./lib/node-webkit')(grunt);
     var util = require('./lib/util')(grunt);
