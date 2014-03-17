@@ -1,9 +1,7 @@
 /* jshint node: true */
 
-var http = require('http');
-var https = require('https');
+var request = require('request');
 var fs = require('fs');
-var parse = require('url').parse;
 
 module.exports = function(grunt) {
 
@@ -11,34 +9,41 @@ module.exports = function(grunt) {
 
     grunt.log.writeln('Downloading ' + url);
 
-    var protocol = parse(url).protocol;
-    var client = protocol === 'http:' ? http : https;
-
+    var r = request.defaults({
+      proxy: process.env.HTTP_PROXY || process.env.HTTPS_PROXY
+    });
+    var reqOpts = {
+      url: url
+    };
     var fileStream = fs.createWriteStream(file);
+    var downloaded = 0;
+    var contentLength = 0;
 
-    client.get(url, function(res) {
+    var stream = r.get(reqOpts);
 
-      var contentLength = res.headers['content-length'];
+    stream.once('response', function(res) {
+      contentLength = res.headers['content-length'];
       grunt.log.writeln('File size is ' + contentLength + ' bytes.');
       grunt.log.writeln('Saving to ' + file);
-
-      var downloaded = 0;
-      res.on('data', function(chunk) {
-        downloaded += chunk.length;
-        var percent = (downloaded/contentLength)*100;
-        grunt.log.write('\033[0G');
-        grunt.log.write('\033[K');
-        grunt.log.write('Downloaded ' + percent.toFixed(2) + '%');
-        if(downloaded >= contentLength) {
-          grunt.log.writeln();
-        }
-      });
-
-      res.once('end', cb.bind(null, null, file));
-      res.once('error', cb);
-      res.pipe(fileStream);
-
     });
+    
+    stream.once('end', function() {
+      return cb(null, file);
+    });
+    stream.once('error', cb);
+
+    stream.on('data', function(chunk) {
+      downloaded += chunk.length;
+      var percent = (downloaded/contentLength)*100;
+      grunt.log.write('\033[0G');
+      grunt.log.write('\033[K');
+      grunt.log.write('Downloaded ' + percent.toFixed(2) + '%');
+      if(downloaded >= contentLength) {
+        grunt.log.writeln();
+      }
+    });
+
+    stream.pipe(fileStream);
 
   };
 
