@@ -21,6 +21,12 @@ module.exports = function(grunt) {
 
     var stream = r.get(reqOpts);
 
+    function cleanStreams() {
+      stream.removeAllListeners();
+      fileStream.removeAllListeners();
+      fileStream.end();
+    }
+
     stream.once('response', function(res) {
       contentLength = res.headers['content-length'];
       grunt.log.writeln('File size is ' + contentLength + ' bytes.');
@@ -28,9 +34,13 @@ module.exports = function(grunt) {
     });
     
     stream.once('end', function() {
+      cleanStreams();
       return cb(null, file);
     });
-    stream.once('error', cb);
+    stream.once('error', function(err) {
+      cleanStreams();
+      return cb(err);
+    });
 
     stream.on('data', function(chunk) {
       downloaded += chunk.length;
