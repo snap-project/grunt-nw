@@ -15,6 +15,4 @@ else
 fi
 export LD_LIBRARY_PATH
 
-export NODE_ENV=production
-
 exec -a "$0" "$HERE/nw-bin" "$@"

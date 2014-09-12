@@ -4,6 +4,7 @@ var path = require('path');
 var extract = require('./lib/extract');
 var defaults = require('./lib/defaults');
 var spawn = require('child_process').spawn;
+var exec = require('child_process').exec;
 
 module.exports = function(grunt) {
 
@@ -40,19 +41,41 @@ module.exports = function(grunt) {
     var nwPath = path.join(binariesDir, runnables[platform]);
 
     if(platform.indexOf('linux') !== -1) {
-      // linudev.so.0 workaround, see README.md
-      process.env.LD_LIBRARY_PATH = '.:' + process.env.LD_LIBRARY_PATH;
+
+      // linudev.so.0 workaround
+
+      var scriptPath = __dirname + '/build-res/linux/libudev-linker.sh';
+      var execOpts = { cwd: process.cwd() };
+
+      exec(scriptPath, execOpts, function(err) {
+
+        if(err) {
+          return done(err);
+        }
+
+        process.env.LD_LIBRARY_PATH = '.:' + process.env.LD_LIBRARY_PATH;
+
+        return spawnNodeWebkit();
+
+      });
+
+    } else {
+      return spawnNodeWebkit();
     }
 
-    grunt.log.writeln(
-      'Running "' + nwPath + ' ' +
-      options.nwArgs.join(' ')+'"'
-    );
+    function spawnNodeWebkit() {
 
-    var exec = spawn(nwPath, options.nwArgs);
-    exec.stdout.pipe(process.stdout);
-    exec.stderr.pipe(process.stderr);
-    exec.once('close', done);
+      grunt.log.writeln(
+        'Running "' + nwPath + ' ' +
+        options.nwArgs.join(' ')+'"'
+      );
+
+      var exec = spawn(nwPath, options.nwArgs);
+      exec.stdout.pipe(process.stdout);
+      exec.stderr.pipe(process.stderr);
+      exec.once('close', done);
+
+    }
 
   }
 
