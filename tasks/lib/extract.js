@@ -11,8 +11,6 @@ function extract(type, archivePath, destDir, cb) {
       child = spawn('tar', ['-xzf', archivePath, '-C', destDir]);
       break;
     case exports.ZIP:
-      var subDir = path.basename(archivePath, type);
-      destDir = path.join(destDir, subDir);
       child = spawn('unzip', [archivePath, '-d', destDir]);
       break;
     default:
