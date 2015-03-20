@@ -2,5 +2,6 @@ node_modules
 npm-debug.log
 tmp
 node-webkit
+nwjs
 build
 libudev.so.0

@@ -8,7 +8,7 @@ module.exports = function(grunt) {
 
   function downloadTask() {
 
-    var nw = require('./lib/node-webkit')(grunt);
+    var nw = require('./lib/nw')(grunt);
     var util = require('./lib/util')(grunt);
 
     var task = this;

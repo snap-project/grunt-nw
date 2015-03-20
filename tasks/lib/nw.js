@@ -1,13 +1,14 @@
 var async = require('async');
 var path = require('path');
 var extract = require('./extract');
+var defaults = require('./defaults');
 
 var rootURL = '';
 var downloadDir = '';
 
 module.exports = function(grunt) {
 
-  var ARCHIVE_NAME_TPL = 'node-webkit' +
+  var ARCHIVE_NAME_TPL = '<%= archivePrefix %>' +
         '-v<%= version %>' +
         '-<%= platform %>' +
         '-<%= arch %><%= ext %>';
@@ -33,7 +34,8 @@ module.exports = function(grunt) {
         version: version,
         platform: platform,
         arch: arch,
-        ext: isLinux ? extract.TGZ : extract.ZIP
+        ext: isLinux ? extract.TGZ : extract.ZIP,
+        archivePrefix: defaults.ARCHIVE_PREFIX
       }
     });
   };
@@ -78,4 +80,3 @@ module.exports = function(grunt) {
   return nw;
 
 };
-

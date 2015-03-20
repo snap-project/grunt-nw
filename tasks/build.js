@@ -10,7 +10,7 @@ module.exports = function(grunt) {
 
   function buildTask() {
 
-    var nw = require('./lib/node-webkit')(grunt);
+    var nw = require('./lib/nw')(grunt);
     var util = require('./lib/util')(grunt);
 
     var task = this;
@@ -125,7 +125,7 @@ module.exports = function(grunt) {
               grunt.file.delete(snapshotPath);
               return next(null, buildDir);
             }
-            
+
 
           ]
 

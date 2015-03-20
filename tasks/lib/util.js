@@ -2,7 +2,7 @@ var extract = require('./extract');
 
 module.exports = function(grunt) {
 
-  var nw = require('./node-webkit')(grunt);
+  var nw = require('./nw')(grunt);
 
   var util = {};
 
@@ -47,4 +47,3 @@ module.exports = function(grunt) {
   return util;
 
 }
-
